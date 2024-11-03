@@ -6,63 +6,44 @@ from RtspStream import RtspStream
 @dataclass
 class ManagerRtspStream:
     shared_map: dict = field(default_factory=lambda: Manager().dict())
-    pruebas: list = field(default_factory=list)
+    streams: list = field(default_factory=list)
 
     def add_prueba(self, url: str):
-        prueba = RtspStream(url, self.shared_map)
-        self.pruebas.append(prueba)
-        return prueba
+        stream = RtspStream(url, self.shared_map)
+        self.streams.append(stream)
+
+    def start_all_capture(self, duration=10):
+        try :
+            for stream in self.streams:
+                ok = stream.start_conection()
+                if ok:
+                    print(f"Conexión exitosa a {stream._url}")
+                    stream.start_capture()
+                else:
+                    print(f"No se pudo conectar a {stream._url}")
+
+            start_time = time.time()
+            while (time.time() - start_time) < duration:
+                for url in self.shared_map.keys():
+                    frame = self.shared_map[url]
+                    print(frame)
+                time.sleep(0.03)
+
+            print("Prueba de múltiples cámaras completada")
+
+
+        except Exception as e:
+            print(f"Error durante la prueba: {str(e)}")
+        finally:
+            self.close_all()
 
     def close_all(self):
-        for prueba in self.pruebas:
-            prueba.stop_capture()
-
+        for stream in self.streams:
+            stream.stop_capture()
 '''
-# Ejemplo de uso con dos cámaras
-def main():
-    try:
-        # Crear el manager
-        manager = ManagerRtspStream()
-
-        # Crear dos cámaras
-        camera1 = manager.add_prueba("rtsp://192.168.1.101:8080/h264_ulaw.sdp")
-        #camera2 = manager.add_prueba("rtsp://192.168.1.102:8080/h264_ulaw.sdp")
-
-        # Iniciar conexiones
-        ok1 = camera1.start_conection()
-        #ok2 = camera2.start_conection()
-
-        # Iniciar capturas
-        if ok1:
-            camera1.start_capture()
-            print("Cámara 1 iniciada")
-        if ok2:
-            camera2.start_capture()
-            print("Cámara 2 iniciada")
-        
-        # Monitorear frames de ambas cámaras
-        ini = time.time()
-        while (time.time() - ini < 10):  # Ejecutar por 10 segundos
-            # Procesar frames de cada cámara
-            for url in manager.shared_map.keys():
-                frame = manager.shared_map[url]
-                if frame is not None:
-                    print(f"Cámara {url} - Frame shape: {frame.shape}")
-                    # Aquí puedes procesar el frame como necesites
-                    # Por ejemplo, mostrar la imagen:
-                    cv2.imshow(f'Camera: {url}', frame)
-                    cv2.waitKey(1)
-
-            time.sleep(0.03)  # ~30 FPS
-
-    except KeyboardInterrupt:
-        print("\nDeteniendo el programa...")
-    finally:
-        # Limpieza
-        manager.close_all()
-        cv2.destroyAllWindows()
-
-
 if __name__ == "__main__":
-    main()
+    tester = ManagerRtspStream()
+    tester.add_prueba("rtsp://192.168.0.4:8080/h264_ulaw.sdp")
+    tester.add_prueba("rtsp://192.168.0.4:8080/h264_ulaw.sdp")
+    tester.start_all_capture(30)
 '''
