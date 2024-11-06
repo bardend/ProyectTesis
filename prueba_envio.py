@@ -41,8 +41,3 @@ print(json_data)
 # docker -> para empaquetar la aplicacion y desplegarla en la nube.
 # kubernetes -> para orquestar los contenedores en la nube.
 # cloud -> para desplegar la aplicacion en la nube.
-# github -> para versionar el codigo.
-# jenkins -> para automatizar el despliegue de la aplicacion.
-# sonarqube -> para analizar la calidad del codigo.
-# prometheus -> para monitorear la aplicacion.
-# grafana -> para visualizar las metricas de la aplicacion.
