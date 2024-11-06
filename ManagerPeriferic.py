@@ -4,17 +4,17 @@ from dataclasses import dataclass, field
 from RtspStream import RtspStream
 
 @dataclass
-class ManagerRtspStream:
+class ManagerPeriferic:
     shared_map: dict = field(default_factory=lambda: Manager().dict())
-    streams: list = field(default_factory=list)
+    periferics: list = field(default_factory=list)
 
-    def add_prueba(self, url: str):
-        stream = RtspStream(url, self.shared_map)
-        self.streams.append(stream)
+    def add_periferic(self, idUniversal: str, latitud: float, longitud: float, power_on: bool, state_periferic: int, url: str):
+        cur = RtspStream(idUniversal, latitud, longitud, power_on, state_periferic, url, self.shared_map)
+        self.periferics.append(cur)
 
     def start_all_capture(self, duration=10):
         try :
-            for stream in self.streams:
+            for stream in self.periferics:
                 ok = stream.start_conection()
                 if ok:
                     print(f"Conexión exitosa a {stream._url}")
@@ -38,12 +38,12 @@ class ManagerRtspStream:
             self.close_all()
 
     def close_all(self):
-        for stream in self.streams:
+        for stream in self.periferics:
             stream.stop_capture()
 '''
 if __name__ == "__main__":
-    tester = ManagerRtspStream()
-    tester.add_prueba("rtsp://192.168.0.4:8080/h264_ulaw.sdp")
-    tester.add_prueba("rtsp://192.168.0.4:8080/h264_ulaw.sdp")
+    tester = ManagerPeriferic()
+    tester.add_periferic("00001", 9.5, 8.5, True, 0, "rtsp://192.168.18.68:8080/h264_ulaw.sdp")
+    tester.add_periferic("00002", 9.5, 8.5, True, 0, "rtsp://192.168.18.68:8080/h264_ulaw.sdp")
     tester.start_all_capture(30)
 '''
