@@ -3,11 +3,12 @@ import time
 from dataclasses import dataclass, field
 import subprocess as sp
 import numpy as np
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 from periferic import Periferic
+from Observer import Observer
 
 @dataclass
-class RtspStream(Periferic):
+class RtspStream(Periferic, Observer):
     shared_map: dict # mapa que guarda dispositivos
     _width: int = field(default=500)  # Ancho del frame
     _height: int = field(default=800)  # Alto del frame
@@ -21,7 +22,7 @@ class RtspStream(Periferic):
         # Inicializa los parámetros de FFmpeg
 
         self.shared_map[self._url] = None
-        #self.params = ['-i', self._url, + PARAMS, '-vf', f'scale={self._width}:{self._height}']
+
         self.params = [
             'ffmpeg',
             '-rtsp_transport', 'tcp',
@@ -60,6 +61,11 @@ class RtspStream(Periferic):
             self._power_on = False
             print(f"Error al iniciar cámara: {str(e)}")
             return False
+
+    def update(self, data: Dict[str, Any]) -> None:
+        # Logica para abrir iniciar la captura de frames
+        print(data)
+
 
     def start_capture(self):
         self.stop_event.clear()  # Necesario para crear un nuevo proceso para futuras capturas
@@ -111,13 +117,9 @@ class RtspStream(Periferic):
             if self.process_read.is_alive():
                 self.process_read.terminate()
 
-'''
 from multiprocessing import Manager
 shared_map = Manager().dict()
 
 cur = RtspStream("00001", 9.5, 8.5, True, 0, "rtsp://192.168.0.4:8080/h264_ulaw.sdp", shared_map)
-ok = cur.start_conection()
 print(cur.latitud)
 print(cur._url)
-print(ok)
-'''
