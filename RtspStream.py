@@ -116,10 +116,11 @@ class RtspStream(Periferic, Observer):
             print("Aquí termina el proceso")
             if self.process_read.is_alive():
                 self.process_read.terminate()
-
+'''
 from multiprocessing import Manager
 shared_map = Manager().dict()
 
 cur = RtspStream("00001", 9.5, 8.5, True, 0, "rtsp://192.168.0.4:8080/h264_ulaw.sdp", shared_map)
 print(cur.latitud)
 print(cur._url)
+'''
