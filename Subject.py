@@ -14,3 +14,5 @@ class Subject:
     def notify_observers(self, data: Dict[str, Any]) -> None:
         for observer in self.observers:
             observer.update(data)
+
+

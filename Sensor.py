@@ -1,3 +1,4 @@
+
 import threading
 import random
 import time
@@ -5,10 +6,9 @@ from typing import Any, Dict
 from dataclasses import dataclass, field
 from Subject import Subject
 from periferic import Periferic
-from RtspStream import RtspStream
 
 @dataclass
-class Sensor1(Subject, Periferic):
+class Sensor(Subject, Periferic):
     shared_map: dict = field(default_factory=dict)
     data: Dict[str, Any] = field(default_factory=dict)
     start_event: threading.Event = threading.Event()  # Nuevo evento
@@ -22,31 +22,45 @@ class Sensor1(Subject, Periferic):
         self.process_read = threading.Thread(target=self.set_data)
         self.process_read.start()
 
+
     def set_data(self):
+
+
+        '''
+        we define the state of the atack :
+        0 dont worry
+        1 open camera
+        '''
+
+        ini_time = time.time()
+
         while self.start_event.is_set():
-            self.data = {"edad": 25, "data": random.randint(1, 100)}
+            if time.time() - ini_time > 40:
+                break
+            if time.time() - ini_time < 10: #[0- 10]
+                self.data = {"state": 0}
+            elif time.time() - ini_time < 20: #[10 - 20]
+                self.data = {"state": 1}
+            elif time.time() - ini_time < 30: #[20 - 30]
+                self.data = {"state": 0}
+            elif time.time() - ini_time < 40: #[30 - 40]
+                self.data = {"state": 1}
+
+            self.update_state();
             self.notify_observers(self.data)
             time.sleep(0.5)
 
+
+    def update_state(self):
+        self.shared_map[self.idUniversal] = self.data["state"]
+
     def stop_capture(self):
         self.start_event.clear()
+        if self.process_read is not None:
+            print("Vamos a esperar que termine el proceso de lectura de Sensor")
+            self.process_read.join()  # Esperar a que el proceso termine
+
+    def stop_periferic(self):
         self.power_on = False
         if self.process_read is not None:
             self.process_read.join()  # Esperar a que el proceso termine
-
-
-
-
-
-
-
-from multiprocessing import Manager
-shared_map = Manager().dict()
-
-sensor = Sensor1("00001", 9.5, 8.5, True, 0, "rtsp://1.45.")
-sensor.set_controler(shared_map)
-
-camera1 = RtspStream("00001", 9.5, 8.5, True, 0, "rtsp://192.168.0.4:8080/h264_ulaw.sdp", shared_map)
-
-sensor.attach(camera1)
-sensor.start_capture()
