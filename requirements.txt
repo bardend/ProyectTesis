@@ -1,0 +1,6 @@
+#numpy~=2.1.2
+#requests~=2.32.3
+#httpx~=1.0.0b0
+#kafka-python~=2.0.2
+pyyaml
+
