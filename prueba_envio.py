@@ -27,4 +27,31 @@ def get_periferics():
     return  {
     periferico.idUniversal: dispositivo_a_json(periferico) for periferico in tester.periferics
     }
+
+    #Cerrar y prender camara -> Multiprocesos python 
+    #Base de datos(sqlalchemy), fast_api
+
+    #####################################################################################################
+    # Base de datos(aut) -> tu <----> aut (fastapi, http, sqalchemy) :) -> genera_un_token(json web token)
+    #Return 
+
+    # Input :Usuario, password
+    # Output: id 
+    # Definir los end-points
+    
+    '''
+    #End-points
+    -Datos en el body :)
+
+    #/login :
+        -input user, password
+        -output token{id, nombre_usuario, rol, refresh_token()}
+
+    #/regiter :
+        -input campos-acordados-discord
+        -output bool
+    '''
+    ######################################################################################################
+    # Back (eventos) -> web socket <----------> ayer te mostre
+
 # uvicorn prueba_envio:app --reload --host 0.0.0.0

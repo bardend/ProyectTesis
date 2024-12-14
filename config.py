@@ -28,5 +28,11 @@ def periferic_to_inicialization(periferico):
 def send_server_to_ia(frames):
     return [random.randint(0, 10) for _ in frames]
 
-
+def periferic_to_web_socket(periferic):
+    return {
+        "location": "Hall",
+        "powerOn": periferic.power_on,
+        "statePeriferico": periferic.state_periferic,
+        "additionalData": random.randint(1, 100),
+    }
 

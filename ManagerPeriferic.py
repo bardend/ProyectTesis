@@ -21,3 +21,8 @@ class ManagerPeriferic:
         for p in self.periferics:
             if p.idUniversal == id :
                 p.state_periferic = new_state
+
+    def get_periferic_for_id(self, id):
+        for p in self.periferics:
+            if p.idUniversal == id:
+                return p

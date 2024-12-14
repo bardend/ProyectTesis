@@ -1,4 +1,3 @@
-
 import threading
 import random
 import time
@@ -24,8 +23,6 @@ class Sensor(Subject, Periferic):
 
 
     def set_data(self):
-
-
         '''
         we define the state of the atack :
         0 dont worry
@@ -35,7 +32,7 @@ class Sensor(Subject, Periferic):
         ini_time = time.time()
 
         while self.start_event.is_set():
-            if time.time() - ini_time > 40:
+            if time.time() - ini_time > 80:
                 break
             if time.time() - ini_time < 10: #[0- 10]
                 self.data = {"state": 0}
